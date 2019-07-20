@@ -20,8 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger nodecnt;
 @property (nonatomic, strong) UIImageView *imgView;
 
-- (SCNNode *)animatedCircle;
-
 @end
 
 NS_ASSUME_NONNULL_END

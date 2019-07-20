@@ -17,15 +17,16 @@
 // ノードが追加されました。
 - (void)renderer:(id<SCNSceneRenderer>)renderer didAddNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor {
     if (![anchor isKindOfClass:[ARPlaneAnchor class]]) return;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"Surface detected!");
-        [self.alertController showOverlyText:@"Surface detected!" withDuration:1];
-    });
-    
-    // add empty image :p
-    SCNNode *enode = [self cerateEmptyPlane];
-    [node addChildNode:enode];
+    if(self.nodecnt == 0){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"Surface detected!");
+            [self.alertController showOverlyText:@"Surface detected!" withDuration:1];
+        });
+        
+        // add empty image :p
+        SCNNode *enode = [self cerateEmptyPlane];
+        [node addChildNode:enode];
+    }
 }
 
 - (void)renderer:(id<SCNSceneRenderer>)renderer willUpdateNode:(SCNNode *)node forAnchor:(ARAnchor *)anchor { }
@@ -46,7 +47,7 @@
 
 // --------------------------------------------------------------------------------------------------
 // 円を描く
-- (UIImage *)circleImg:(float)radius {
+- (UIImage *)clearBox {
     // 描画用イメージ作成
     CGRect rect = CGRectMake(0, 0, 300.0, 300.0); // unit -> pixle
     UIGraphicsBeginImageContext(rect.size);
@@ -54,12 +55,12 @@
     //UIGraphicsPushContext(context);
 
     // 描画！
-    UIBezierPath *circle = [UIBezierPath bezierPathWithArcCenter:CGPointMake(150.0, 150.0) radius:radius startAngle:0 endAngle:M_PI * 2 clockwise:YES];
-    [[UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0] setStroke];
-    [circle setLineWidth:1.0];
-    [circle stroke];
+    UIBezierPath *abox = [UIBezierPath bezierPathWithRect:CGRectMake(0.0, 0.0, 300.0, 300.0)];
+    [[UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.0] setFill];
+    [abox fill];
+    
     // 描いた絵を UIImage に変換（描画用イメージを終了）
-    CGContextAddPath(context, circle.CGPath);
+    CGContextAddPath(context, abox.CGPath);
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     //UIGraphicsPopContext();
     UIGraphicsEndImageContext();
@@ -70,7 +71,7 @@
 // ---------------------------------------------------------------------------------
 // 透明Planeを返します。
 - (SCNNode *)cerateEmptyPlane {
-    UIImage *img = [self circleImg:212.1];
+    UIImage *img = [self clearBox];
     SCNMaterial *material = [SCNMaterial new];
     material.diffuse.contents = img;
     SCNPlane *pln = [SCNPlane planeWithWidth:2.0 height:2.0];
