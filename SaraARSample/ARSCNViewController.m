@@ -26,6 +26,7 @@
         // add empty image :p
         SCNNode *enode = [self cerateEmptyPlane];
         [node addChildNode:enode];
+        self.nodecnt = 1;
     }
 }
 
